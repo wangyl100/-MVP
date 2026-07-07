@@ -1,0 +1,117 @@
+@primary-color: #1677ff;
+@success-color: #52c41a;
+@warning-color: #faad14;
+@error-color: #ff4d4f;
+@info-color: #1890ff;
+@bg-color: #f5f7fa;
+@card-bg: #ffffff;
+@text-primary: #1f2937;
+@text-secondary: #6b7280;
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'Inter', 'Roboto', Arial, sans-serif;
+  font-size: 14px;
+  color: @text-primary;
+  background: @bg-color;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.18);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.32);
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.page-container {
+  padding: 24px;
+  min-height: calc(100vh - 64px - 49px);
+}
+
+.page-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.flex {
+  display: flex;
+}
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.mb-16 {
+  margin-bottom: 16px;
+}
+.mb-24 {
+  margin-bottom: 24px;
+}
+.mt-16 {
+  margin-top: 16px;
+}
+
+.text-secondary {
+  color: @text-secondary;
+}
+
+.stat-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  transition: all 0.2s ease-in-out;
+  &:hover {
+    box-shadow: 0 4px 16px rgba(22, 119, 255, 0.12);
+    transform: translateY(-2px);
+  }
+  .stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #fff;
+  }
+  .stat-title {
+    color: @text-secondary;
+    font-size: 14px;
+  }
+  .stat-value {
+    font-size: 28px;
+    font-weight: 600;
+    color: @text-primary;
+    line-height: 1.2;
+    margin-top: 8px;
+  }
+}

@@ -1,0 +1,123 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+  tomcat:
+    uri-encoding: UTF-8
+
+spring:
+  application:
+    name: kg-platform-backend
+  profiles:
+    active: dev
+
+  # ===== JPA / 数据库 =====
+  # 默认使用 H2 内存数据库，本地无需安装 PostgreSQL 即可启动
+  # 当 kg-platform.datasource.enabled=true 且配置了 PostgreSQL 时切换到 PostgreSQL
+  datasource:
+    url: jdbc:h2:mem:kgplatform;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.H2Dialect
+    open-in-view: false
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  # ===== Neo4j 图数据库（可选） =====
+  # 当本地未安装 Neo4j 时，将 enabled 设为 false，应用正常启动
+  neo4j:
+    uri: ${NEO4J_URI:}
+    authentication:
+      username: ${NEO4J_USERNAME:neo4j}
+      password: ${NEO4J_PASSWORD:neo4j}
+  data:
+    neo4j:
+      # 注意：Spring Boot 3.2 中通过 -Dspring.neo4j.uri= 关闭自动配置
+      # 这里通过自定义 ConditionalOnProperty 控制实际调用
+
+  # ===== Kafka 消息队列（可选） =====
+  # 当本地未安装 Kafka 时，将 enabled 设为 false，应用正常启动
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      retries: 3
+    consumer:
+      group-id: kg-platform
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    listener:
+      # 容器启动失败时不阻止应用启动
+      missing-topics-fatal: false
+
+# ===== 平台自定义配置 =====
+kg-platform:
+  # 各中间件开关：false 时跳过真实连接，直接降级到 Mock
+  middleware:
+    postgresql:
+      enabled: false
+      url: jdbc:postgresql://localhost:5432/kgplatform
+      username: postgres
+      password: postgres
+    neo4j:
+      enabled: false
+      uri: bolt://localhost:7687
+      username: neo4j
+      password: neo4j
+    kafka:
+      enabled: false
+      bootstrap-servers: localhost:9092
+    xxl-job:
+      enabled: false
+      admin-addresses: http://localhost:8081/xxl-job-admin
+      access-token: default_token
+      app-name: kg-platform-executor
+    faiss:
+      enabled: false
+      index-path: /tmp/faiss/index
+      dimension: 768
+
+# XXL-Job 配置
+xxl:
+  job:
+    admin:
+      addresses: http://localhost:8081/xxl-job-admin
+    access:
+      token: default_token
+    executor:
+      appname: kg-platform-executor
+      address:
+      ip:
+      port: 9999
+      logpath: /data/applogs/xxl-job/jobhandler
+      logretentiondays: 30
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when-authorized
+
+logging:
+  level:
+    root: INFO
+    com.kgplatform: DEBUG
+    org.springframework.data.neo4j: WARN
+    org.hibernate: WARN
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
