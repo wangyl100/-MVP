@@ -24,14 +24,17 @@ defineProps<{
   justify-content: space-between;
   margin-bottom: 24px;
   .title {
-    font-size: 22px;
+    // §5.2 页面区块标题 16px
+    font-size: 16px;
     font-weight: 600;
-    color: #1f2937;
+    color: #1f2a37;
     margin: 0;
+    line-height: 24px;
   }
   .description {
-    font-size: 13px;
-    color: #6b7280;
+    // §5.2 胶囊/标签/说明 12px
+    font-size: 12px;
+    color: #7b8794;
     margin: 6px 0 0;
   }
 }

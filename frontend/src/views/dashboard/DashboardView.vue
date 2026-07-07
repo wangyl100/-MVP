@@ -40,8 +40,8 @@
           <div class="flex-between mb-16">
             <h3 style="margin: 0; font-size: 16px">知识增长趋势</h3>
             <a-space>
-              <a-tag color="blue">实体</a-tag>
-              <a-tag color="green">关系</a-tag>
+              <a-tag color="processing">实体</a-tag>
+            <a-tag color="success">关系</a-tag>
             </a-space>
           </div>
           <EChart :option="trendOption" height="320px" />
@@ -165,26 +165,26 @@ const router = useRouter()
 const timeRange = ref('week')
 
 const statCards = computed(() => [
-  { title: '知识图谱项目', value: dashboardStats.projectCount, trend: 12.5, color: 'linear-gradient(135deg, #1677ff, #4096ff)', icon: DashboardOutlined },
-  { title: '实体总数', value: formatNumber(dashboardStats.entityCount), trend: 8.3, color: 'linear-gradient(135deg, #52c41a, #73d13d)', icon: NodeIndexOutlined },
-  { title: '关系总数', value: formatNumber(dashboardStats.relationCount), trend: 15.6, color: 'linear-gradient(135deg, #722ed1, #9254de)', icon: ShareAltOutlined },
-  { title: '抽取任务', value: dashboardStats.taskCount, trend: -3.2, color: 'linear-gradient(135deg, #fa8c16, #ffa940)', icon: RobotOutlined }
+  { title: '知识图谱项目', value: dashboardStats.projectCount, trend: 12.5, color: 'linear-gradient(135deg, #2F6BFF, #4C84FF)', icon: DashboardOutlined },
+  { title: '实体总数', value: formatNumber(dashboardStats.entityCount), trend: 8.3, color: 'linear-gradient(135deg, #6AC7BA, #53C7E8)', icon: NodeIndexOutlined },
+  { title: '关系总数', value: formatNumber(dashboardStats.relationCount), trend: 15.6, color: 'linear-gradient(135deg, #4C84FF, #53C7E8)', icon: ShareAltOutlined },
+  { title: '抽取任务', value: dashboardStats.taskCount, trend: -3.2, color: 'linear-gradient(135deg, #2F6BFF, #6AC7BA)', icon: RobotOutlined }
 ])
 
 const taskStatusList = computed(() => [
-  { label: '运行中', value: taskStatusStats.running, color: '#1677ff', icon: PlayCircleOutlined },
-  { label: '待处理', value: taskStatusStats.pending, color: '#faad14', icon: ClockCircleOutlined },
-  { label: '已完成', value: taskStatusStats.completed, color: '#52c41a', icon: CheckCircleOutlined },
-  { label: '失败', value: taskStatusStats.failed, color: '#ff4d4f', icon: ExclamationCircleOutlined }
+  { label: '运行中', value: taskStatusStats.running, color: '#2F6BFF', icon: PlayCircleOutlined },
+  { label: '待处理', value: taskStatusStats.pending, color: '#F08A5D', icon: ClockCircleOutlined },
+  { label: '已完成', value: taskStatusStats.completed, color: '#33B26D', icon: CheckCircleOutlined },
+  { label: '失败', value: taskStatusStats.failed, color: '#E96A5F', icon: ExclamationCircleOutlined }
 ])
 
 const quickActions = [
-  { label: '新建图谱', color: 'linear-gradient(135deg, #1677ff, #4096ff)', icon: FolderAddOutlined, path: '/project/list' },
-  { label: '导入数据', color: 'linear-gradient(135deg, #52c41a, #73d13d)', icon: CloudUploadOutlined, path: '/data/source' },
-  { label: '大模型抽取', color: 'linear-gradient(135deg, #722ed1, #9254de)', icon: RobotOutlined, path: '/extraction/llm' },
-  { label: '开始标注', color: 'linear-gradient(135deg, #fa8c16, #ffa940)', icon: EditOutlined, path: '/annotation/task' },
-  { label: '模型训练', color: 'linear-gradient(135deg, #13c2c2, #36cfc9)', icon: ExperimentOutlined, path: '/model/training' },
-  { label: '图谱探索', color: 'linear-gradient(135deg, #eb2f96, #f759ab)', icon: ThunderboltOutlined, path: '/explore/visual' }
+  { label: '新建图谱', color: 'linear-gradient(135deg, #2F6BFF, #4C84FF)', icon: FolderAddOutlined, path: '/project/list' },
+  { label: '导入数据', color: 'linear-gradient(135deg, #6AC7BA, #53C7E8)', icon: CloudUploadOutlined, path: '/data/source' },
+  { label: '大模型抽取', color: 'linear-gradient(135deg, #4C84FF, #2F6BFF)', icon: RobotOutlined, path: '/extraction/llm' },
+  { label: '开始标注', color: 'linear-gradient(135deg, #53C7E8, #6AC7BA)', icon: EditOutlined, path: '/annotation/task' },
+  { label: '模型训练', color: 'linear-gradient(135deg, #2F6BFF, #6AC7BA)', icon: ExperimentOutlined, path: '/model/training' },
+  { label: '图谱探索', color: 'linear-gradient(135deg, #4C84FF, #53C7E8)', icon: ThunderboltOutlined, path: '/explore/visual' }
 ]
 
 const announcements = [
@@ -195,9 +195,9 @@ const announcements = [
 ]
 
 const statusColor: Record<string, string> = {
-  success: 'green',
-  error: 'red',
-  info: 'blue'
+  success: '#33B26D',
+  error: '#E96A5F',
+  info: '#2F6BFF'
 }
 
 const trendOption = computed(() => ({
@@ -212,13 +212,13 @@ const trendOption = computed(() => ({
       type: 'line',
       smooth: true,
       data: growthTrend.entity,
-      itemStyle: { color: '#1677ff' },
+      itemStyle: { color: '#2F6BFF' },
       areaStyle: {
         color: {
           type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
           colorStops: [
-            { offset: 0, color: 'rgba(22,119,255,0.35)' },
-            { offset: 1, color: 'rgba(22,119,255,0.02)' }
+            { offset: 0, color: 'rgba(47,107,255,0.35)' },
+            { offset: 1, color: 'rgba(47,107,255,0.02)' }
           ]
         }
       }
@@ -228,13 +228,13 @@ const trendOption = computed(() => ({
       type: 'line',
       smooth: true,
       data: growthTrend.relation,
-      itemStyle: { color: '#52c41a' },
+      itemStyle: { color: '#6AC7BA' },
       areaStyle: {
         color: {
           type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
           colorStops: [
-            { offset: 0, color: 'rgba(82,196,26,0.35)' },
-            { offset: 1, color: 'rgba(82,196,26,0.02)' }
+            { offset: 0, color: 'rgba(106,199,186,0.35)' },
+            { offset: 1, color: 'rgba(106,199,186,0.02)' }
           ]
         }
       }
@@ -255,7 +255,7 @@ const pieOption = computed(() => ({
       label: { show: false },
       emphasis: { label: { show: true, fontSize: 14, fontWeight: 'bold' } },
       data: entityTypeDistribution,
-      color: ['#1677ff', '#52c41a', '#faad14', '#ff4d4f', '#722ed1', '#13c2c2']
+      color: ['#2F6BFF', '#6AC7BA', '#53C7E8', '#4C84FF', '#33B26D', '#F08A5D']
     }
   ]
 }))
@@ -265,8 +265,8 @@ const pieOption = computed(() => ({
 .stat-trend {
   font-size: 12px;
   margin-top: 6px;
-  &.up { color: #52c41a; }
-  &.down { color: #ff4d4f; }
+  &.up { color: #33B26D; }
+  &.down { color: #E96A5F; }
 }
 .task-status-list {
   display: grid;
@@ -278,17 +278,18 @@ const pieOption = computed(() => ({
   align-items: center;
   gap: 12px;
   padding: 12px;
-  background: #fafbfc;
-  border-radius: 8px;
+  background: #F8FAFD;
+  border: 1px solid #E8EDF5;
+  border-radius: 12px;
   .ts-icon {
     width: 36px; height: 36px;
-    border-radius: 8px;
+    border-radius: 10px;
     color: #fff;
     display: flex; align-items: center; justify-content: center;
     font-size: 16px;
   }
-  .ts-label { font-size: 12px; color: #6b7280; }
-  .ts-value { font-size: 20px; font-weight: 600; color: #1f2937; }
+  .ts-label { font-size: 12px; color: #7B8794; }
+  .ts-value { font-size: 20px; font-weight: 600; color: #1F2A37; }
 }
 .quick-actions {
   display: grid;
@@ -298,11 +299,11 @@ const pieOption = computed(() => ({
 .quick-action {
   text-align: center;
   padding: 16px 8px;
-  border-radius: 8px;
+  border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s;
   &:hover {
-    background: #f5f7fa;
+    background: #EAF2FF;
     transform: translateY(-2px);
   }
   .qa-icon {
@@ -313,11 +314,11 @@ const pieOption = computed(() => ({
     font-size: 20px;
     margin: 0 auto 8px;
   }
-  .qa-label { font-size: 12px; color: #1f2937; }
+  .qa-label { font-size: 12px; color: #1F2A37; }
 }
 .activity-item {
-  .activity-title { font-size: 14px; font-weight: 500; color: #1f2937; }
-  .activity-desc { font-size: 12px; color: #6b7280; margin-top: 4px; }
-  .activity-time { font-size: 12px; color: #9ca3af; margin-top: 4px; }
+  .activity-title { font-size: 14px; font-weight: 500; color: #1F2A37; }
+  .activity-desc { font-size: 12px; color: #7B8794; margin-top: 4px; }
+  .activity-time { font-size: 12px; color: #9BA7B4; margin-top: 4px; }
 }
 </style>

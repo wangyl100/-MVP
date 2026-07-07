@@ -12,6 +12,11 @@ export const useAppStore = defineStore('app', () => {
     email: 'admin@kg-platform.com'
   })
 
+  // 主题模式：spec §3.3 主题切换 / §12 检查浅色与暗色主题
+  const darkMode = ref<boolean>(
+    typeof localStorage !== 'undefined' && localStorage.getItem('kg_theme') === 'dark'
+  )
+
   function toggleCollapsed() {
     collapsed.value = !collapsed.value
   }
@@ -20,5 +25,24 @@ export const useAppStore = defineStore('app', () => {
     collapsed.value = v
   }
 
-  return { collapsed, userInfo, toggleCollapsed, setCollapsed }
+  function setDarkMode(v: boolean) {
+    darkMode.value = v
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('kg_theme', v ? 'dark' : 'light')
+    }
+  }
+
+  function toggleDarkMode() {
+    setDarkMode(!darkMode.value)
+  }
+
+  return {
+    collapsed,
+    userInfo,
+    darkMode,
+    toggleCollapsed,
+    setCollapsed,
+    setDarkMode,
+    toggleDarkMode
+  }
 })

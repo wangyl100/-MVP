@@ -6,6 +6,11 @@
 import { onMounted, onBeforeUnmount, ref, watch, shallowRef } from 'vue'
 import * as echarts from 'echarts'
 import type { EChartsOption } from 'echarts'
+import { useAppStore } from '@/stores/app'
+import { registerChartTheme, chartThemeName } from '@/styles/echarts-theme'
+
+// 模块加载时注册一次工业风图表主题（幂等）
+registerChartTheme()
 
 const props = withDefaults(
   defineProps<{
@@ -17,13 +22,14 @@ const props = withDefaults(
   }
 )
 
+const appStore = useAppStore()
 const chartRef = ref<HTMLElement>()
 const chart = shallowRef<echarts.ECharts>()
 
 function render() {
   if (!chartRef.value) return
   if (!chart.value) {
-    chart.value = echarts.init(chartRef.value)
+    chart.value = echarts.init(chartRef.value, chartThemeName(appStore.darkMode))
   }
   chart.value.setOption(props.option, true)
 }

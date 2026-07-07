@@ -1,12 +1,57 @@
-@primary-color: #1677ff;
-@success-color: #52c41a;
-@warning-color: #faad14;
-@error-color: #ff4d4f;
-@info-color: #1890ff;
-@bg-color: #f5f7fa;
+// ============================================================
+// 设计 Token（与 src/styles/theme.ts 的 palette 保持同值）
+// 对应《UI风格.md》§4 色彩系统 / §5 字体排版 / §6 卡片容器 / §4.3 状态色
+// ============================================================
+
+// 品牌
+@sidebar-blue: #0050b3;
+@primary-color: #2f6bff;
+@primary-light: #4c84ff;
+@primary-light-bg: #eaf2ff;
+@cyan-accent: #53c7e8;
+
+// 表面
+@bg-color: #f5f7fb;
 @card-bg: #ffffff;
-@text-primary: #1f2937;
-@text-secondary: #6b7280;
+@card-bg-secondary: #f8fafd;
+@border-weak: #e8edf5;
+@border-strong: #d7e0ee;
+
+// 文字
+@text-primary: #1f2a37;
+@text-secondary: #7b8794;
+@text-tertiary: #9ba7b4;
+
+// 状态（§4.3）
+@status-normal: #33b26d;
+@status-warning: #f08a5d;
+@status-danger: #e96a5f;
+@status-info: @primary-color;
+
+// 图表（§8.2）
+@micro-trend: #6ac7ba;
+@grid-line: #e9e9e9;
+
+// 暗色（§4.2）
+@bg-dark: #0f1726;
+@card-bg-dark: #172133;
+@card-bg-secondary-dark: #121c2e;
+@header-bg-dark: #101b2d;
+@border-dark: #233049;
+@border-strong-dark: #1e2a40;
+@text-primary-dark: #e8edf8;
+@text-secondary-dark: #a6b3c6;
+@text-tertiary-dark: #7e8aa1;
+
+// 圆角 / 阴影 / 间距
+@radius-card: 12px;
+@radius-tile: 10px;
+@shadow-card: 0 1px 2px rgba(15, 23, 42, 0.04);
+@shadow-card-hover: 0 4px 14px rgba(47, 107, 255, 0.10);
+
+// ============================================================
+// 基础重置
+// ============================================================
 
 * {
   box-sizing: border-box;
@@ -21,7 +66,8 @@ body,
 }
 
 body {
-  font-family: 'PingFang SC', 'Microsoft YaHei', 'Inter', 'Roboto', Arial, sans-serif;
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'DingTalk Latin', 'Inter', 'Roboto', Arial,
+    sans-serif;
   font-size: 14px;
   color: @text-primary;
   background: @bg-color;
@@ -29,20 +75,25 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+// 滚动条：克制、工业感
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.18);
+  background: rgba(123, 135, 148, 0.35);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.32);
+  background: rgba(123, 135, 148, 0.55);
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
+// ============================================================
+// 页面 / 卡片容器（§6：中等圆角、细弱描边、极轻阴影）
+// ============================================================
 
 .page-container {
   padding: 24px;
@@ -50,10 +101,11 @@ body {
 }
 
 .page-card {
-  background: #fff;
-  border-radius: 8px;
+  background: @card-bg;
+  border: 1px solid @border-weak;
+  border-radius: @radius-card;
   padding: 24px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  box-shadow: @shadow-card;
 }
 
 .flex {
@@ -83,20 +135,22 @@ body {
   color: @text-secondary;
 }
 
+// 统计卡片
 .stat-card {
-  background: #fff;
-  border-radius: 8px;
+  background: @card-bg;
+  border: 1px solid @border-weak;
+  border-radius: @radius-card;
   padding: 24px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  box-shadow: @shadow-card;
   transition: all 0.2s ease-in-out;
   &:hover {
-    box-shadow: 0 4px 16px rgba(22, 119, 255, 0.12);
+    box-shadow: @shadow-card-hover;
     transform: translateY(-2px);
   }
   .stat-icon {
     width: 48px;
     height: 48px;
-    border-radius: 12px;
+    border-radius: @radius-tile;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -113,5 +167,74 @@ body {
     color: @text-primary;
     line-height: 1.2;
     margin-top: 8px;
+  }
+}
+
+// ============================================================
+// 状态标签（§4.3：状态尽量同时使用文字和底色，不只依赖单个色点）
+// ============================================================
+
+.status-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 500;
+  &::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+}
+.status-tag--normal {
+  color: @status-normal;
+  background: rgba(51, 178, 109, 0.12);
+}
+.status-tag--warning {
+  color: @status-warning;
+  background: rgba(240, 138, 93, 0.12);
+}
+.status-tag--danger {
+  color: @status-danger;
+  background: rgba(233, 106, 95, 0.12);
+}
+.status-tag--info {
+  color: @primary-color;
+  background: @primary-light-bg;
+}
+
+// ============================================================
+// 暗色主题覆盖（§4.2）
+// ============================================================
+
+html[data-theme='dark'] body {
+  background: @bg-dark;
+  color: @text-primary-dark;
+}
+html[data-theme='dark'] {
+  .page-card,
+  .stat-card {
+    background: @card-bg-dark;
+    border-color: @border-dark;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  }
+  .stat-card {
+    &:hover {
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+    }
+    .stat-title {
+      color: @text-secondary-dark;
+    }
+    .stat-value {
+      color: @text-primary-dark;
+    }
+  }
+  .text-secondary {
+    color: @text-secondary-dark;
   }
 }

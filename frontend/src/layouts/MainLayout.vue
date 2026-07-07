@@ -8,6 +8,7 @@
       :width="240"
       :collapsed-width="64"
       class="sider"
+      :class="{ 'sider--dark': appStore.darkMode }"
     >
       <div class="logo" @click="router.push('/dashboard')">
         <div class="logo-icon">
@@ -42,21 +43,27 @@
           </a-breadcrumb>
         </div>
         <div class="header-right">
+          <a-tooltip :title="appStore.darkMode ? '切换为浅色' : '切换为暗色'">
+            <a-button type="text" shape="circle" class="icon-btn" @click="appStore.toggleDarkMode">
+              <BulbFilled v-if="!appStore.darkMode" />
+              <BulbOutlined v-else />
+            </a-button>
+          </a-tooltip>
           <a-tooltip title="搜索">
-            <a-button type="text" shape="circle">
+            <a-button type="text" shape="circle" class="icon-btn">
               <SearchOutlined />
             </a-button>
           </a-tooltip>
           <a-tooltip title="通知">
             <a-badge :count="5" size="small">
-              <a-button type="text" shape="circle">
+              <a-button type="text" shape="circle" class="icon-btn">
                 <BellOutlined />
               </a-button>
             </a-badge>
           </a-tooltip>
           <a-dropdown>
             <div class="user-info">
-              <a-avatar style="background-color: #1677ff">
+              <a-avatar style="background-color: #2f6bff">
                 {{ userInfo.nickname.charAt(0) }}
               </a-avatar>
               <span class="username">{{ userInfo.nickname }}</span>
@@ -98,6 +105,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useAppStore } from '@/stores/app'
 import { menuConfig, type MenuItem } from '@/config/menu'
 import * as Icons from '@ant-design/icons-vue'
+import { BulbOutlined, BulbFilled } from '@ant-design/icons-vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -158,17 +166,21 @@ watch(
 )
 
 function onMenuClick({ key }: { key: string }) {
-  const find = (list: MenuItem[]): string | undefined => {
+  const find = (list: MenuItem[]): { path?: string; hasChildren: boolean } | undefined => {
     for (const item of list) {
-      if (item.key === key) return item.path
+      if (item.key === key) {
+        return { path: item.path, hasChildren: !!item.children }
+      }
       if (item.children) {
         const r = find(item.children)
         if (r) return r
       }
     }
   }
-  const path = find(menuConfig)
-  if (path) router.push(path)
+  const result = find(menuConfig)
+  if (result && !result.hasChildren && result.path) {
+    router.push(result.path)
+  }
 }
 
 // 面包屑
@@ -199,11 +211,14 @@ const breadcrumbList = computed(() => {
   min-height: 100vh;
 }
 .sider {
-  background: #001529;
+  // 浅色：背景由 Layout.siderBg token (#0050B3) 提供
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.08);
   position: relative;
   z-index: 10;
   overflow: auto;
+}
+.sider--dark {
+  background: linear-gradient(180deg, #132642 0%, #0d1a30 100%);
 }
 .logo {
   height: 64px;
@@ -218,7 +233,7 @@ const breadcrumbList = computed(() => {
     width: 36px;
     height: 36px;
     border-radius: 8px;
-    background: linear-gradient(135deg, #1677ff, #4096ff);
+    background: linear-gradient(135deg, #2f6bff, #4c84ff);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -232,12 +247,12 @@ const breadcrumbList = computed(() => {
   }
 }
 .header {
-  background: #fff;
+  // 背景由 Layout.headerBg token 提供（浅色 #fff / 暗色 #101B2D），随主题切换
   padding: 0 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.06);
   height: 64px;
   z-index: 9;
 }
@@ -265,16 +280,62 @@ const breadcrumbList = computed(() => {
   padding: 0 8px;
   border-radius: 6px;
   &:hover {
-    background: #f5f7fa;
+    background: #eaf2ff;
   }
   .username {
     font-size: 14px;
-    color: #1f2937;
+    color: #1f2a37;
   }
 }
 .content {
-  background: #f5f7fa;
+  background: #f5f7fb;
   overflow-y: auto;
+}
+// 顶栏图标按钮：浅色 Header 上给一个明显可见的浅灰底 + 细描边，
+// 避免按钮与白色 Header 融为一体、看不出这里是个可点击按钮。
+.icon-btn {
+  background: #f0f2f5 !important;
+  color: #4b5563 !important;
+  border: 1px solid #e8edf5 !important;
+  &:hover {
+    background: #eaf2ff !important;
+    color: #2f6bff !important;
+    border-color: #2f6bff !important;
+  }
+  &:focus,
+  &:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+}
+
+// 暗色模式局部覆盖
+html[data-theme='dark'] {
+  .content {
+    background: #0f1726;
+  }
+  .header {
+    background: #101b2d;
+  }
+  .sider {
+    background: linear-gradient(180deg, #132642 0%, #0d1a30 100%);
+  }
+  .username {
+    color: #e8edf8;
+  }
+  .user-info:hover {
+    background: rgba(255, 255, 255, 0.06);
+  }
+  .icon-btn {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: #c0ccdd !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
+    &:hover {
+      background: rgba(47, 107, 255, 0.18) !important;
+      color: #fff !important;
+      border-color: #2f6bff !important;
+    }
+  }
 }
 
 .fade-enter-active,
