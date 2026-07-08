@@ -2,7 +2,7 @@
   <div class="page-container">
     <PageHeader title="角色权限" description="基于 RBAC 的角色与权限管理">
       <template #extra>
-        <a-button type="primary"><PlusOutlined /> 新建角色</a-button>
+        <a-button type="primary" @click="action.openCreate('新建角色', '请填写角色名称、角色编码、描述及关联用户。')"><PlusOutlined /> 新建角色</a-button>
       </template>
     </PageHeader>
 
@@ -33,9 +33,9 @@
           </a-row>
           <a-divider style="margin: 12px 0" />
           <a-space>
-            <a-button type="primary" size="small" ghost>配置权限</a-button>
-            <a-button size="small">编辑</a-button>
-            <a-button size="small" danger>删除</a-button>
+            <a-button type="primary" size="small" ghost @click="action.openEdit('配置权限', role.name)">配置权限</a-button>
+            <a-button size="small" @click="action.openEdit('角色', role.name)">编辑</a-button>
+            <a-button size="small" danger @click="action.confirmDelete(role.name)">删除</a-button>
           </a-space>
         </a-card>
       </a-col>
@@ -67,6 +67,9 @@
 import PageHeader from '@/components/PageHeader.vue'
 import { PlusOutlined, SafetyOutlined } from '@ant-design/icons-vue'
 import { roleList } from '@/utils/mock'
+import { useAction } from '@/composables/useAction'
+
+const action = useAction()
 
 const roleColor: Record<string, string> = {
   super_admin: 'linear-gradient(135deg,#ff4d4f,#ff7875)',

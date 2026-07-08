@@ -30,7 +30,7 @@
               <a-input-search v-model:value="searchKeyword" placeholder="搜索节点" style="width:200px" @search="onSearch" />
               <a-tooltip title="放大"><a-button @click="zoomIn"><ZoomInOutlined /></a-button></a-tooltip>
               <a-tooltip title="缩小"><a-button @click="zoomOut"><ZoomOutOutlined /></a-button></a-tooltip>
-              <a-tooltip title="全屏"><a-button><FullscreenOutlined /></a-button></a-tooltip>
+              <a-tooltip title="全屏"><a-button @click="action.info('视图操作（演示）')"><FullscreenOutlined /></a-button></a-tooltip>
               <a-divider type="vertical" />
               <a-checkbox v-model:checked="showLabel">显示标签</a-checkbox>
               <a-checkbox v-model:checked="showArrow">显示箭头</a-checkbox>
@@ -62,10 +62,10 @@
             </a-descriptions>
             <a-divider style="margin:12px 0" />
             <a-space direction="vertical" style="width:100%">
-              <a-button block type="primary" size="small">展开邻居节点</a-button>
-              <a-button block size="small">查找最短路径</a-button>
-              <a-button block size="small">隐藏此节点</a-button>
-              <a-button block size="small" danger>从此节点删除</a-button>
+              <a-button block type="primary" size="small" @click="action.notify('展开邻居', selectedNode.label)">展开邻居节点</a-button>
+              <a-button block size="small" @click="action.notify('查找路径', selectedNode.label)">查找最短路径</a-button>
+              <a-button block size="small" @click="action.notify('隐藏节点', selectedNode.label)">隐藏此节点</a-button>
+              <a-button block size="small" danger @click="action.confirmDelete(selectedNode.label)">从此节点删除</a-button>
             </a-space>
           </template>
           <a-empty v-else description="点击节点查看详情" :image="null" style="padding:24px 0">
@@ -132,11 +132,14 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, onBeforeUnmount, watch } from 'vue'
 import { PageHeader } from '@/components/PageHeader.vue'
+import { useAction } from '@/composables/useAction'
 import G6 from '@antv/g6'
 import {
   ReloadOutlined, ZoomInOutlined, ZoomOutOutlined, FullscreenOutlined,
   NodeIndexOutlined, InfoCircleOutlined
 } from '@ant-design/icons-vue'
+
+const action = useAction()
 
 const containerRef = ref<HTMLElement | null>(null)
 let graph: any = null

@@ -3,11 +3,11 @@
     <PageHeader title="图谱版本管理" description="图谱版本快照、版本对比与回滚">
       <template #extra>
         <a-space>
-          <a-button>
+          <a-button @click="action.notify('创建', '版本快照')">
             <template #icon><HistoryOutlined /></template>
             创建快照
           </a-button>
-          <a-button type="primary">
+          <a-button type="primary" @click="action.info('请在下方选择两个版本进行对比')">
             <template #icon><CameraOutlined /></template>
             版本对比
           </a-button>
@@ -54,8 +54,8 @@
                 <div style="margin-top:8px">
                   <a-button type="link" size="small" v-if="i!==0" @click="rollback(v)">回滚到此版本</a-button>
                   <a-button type="link" size="small" @click="selectForCompare(v)" :disabled="compareV.includes(v.id)">加入对比</a-button>
-                  <a-button type="link" size="small">详情</a-button>
-                  <a-button type="link" size="small">导出</a-button>
+                  <a-button type="link" size="small" @click="action.openDetail('版本详情', v)">详情</a-button>
+                  <a-button type="link" size="small" @click="action.notify('导出', v.version)">导出</a-button>
                 </div>
               </div>
             </a-timeline-item>
@@ -113,6 +113,9 @@ import {
   CameraOutlined, HistoryOutlined, BranchesOutlined, DatabaseOutlined,
   DeploymentUnitOutlined, ApartmentOutlined
 } from '@ant-design/icons-vue'
+import { useAction } from '@/composables/useAction'
+
+const action = useAction()
 
 const stats = [
   { label: '版本总数', value: graphVersions.length, icon: HistoryOutlined, color: '#1677ff', bg: '#e6f4ff' },

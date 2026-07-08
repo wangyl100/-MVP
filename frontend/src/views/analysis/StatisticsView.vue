@@ -8,7 +8,7 @@
             <a-select-option v-for="p in projectList" :key="p.id" :value="p.id">{{ p.name }}</a-select-option>
           </a-select>
           <a-range-picker />
-          <a-button type="primary"><ExportOutlined /> 导出报告</a-button>
+          <a-button type="primary" @click="action.notify('导出', '报告')"><ExportOutlined /> 导出报告</a-button>
         </a-space>
       </template>
     </PageHeader>
@@ -134,12 +134,15 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { PageHeader } from '@/components/PageHeader.vue'
+import { useAction } from '@/composables/useAction'
 import EChart from '@/components/EChart.vue'
 import { statisticsData, dashboardStats, projectList, growthTrend } from '@/utils/mock'
 import {
   ExportOutlined, ArrowUpOutlined, ArrowDownOutlined,
   ApartmentOutlined, BranchesOutlined, NodeIndexOutlined, ShareAltOutlined, DatabaseOutlined
 } from '@ant-design/icons-vue'
+
+const action = useAction()
 
 const project = ref('all')
 const trendRange = ref<'7' | '30' | '90'>('7')

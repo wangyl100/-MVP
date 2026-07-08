@@ -7,7 +7,7 @@
             <a-radio-button value="grid"><AppstoreOutlined /></a-radio-button>
             <a-radio-button value="list"><UnorderedListOutlined /></a-radio-button>
           </a-radio-group>
-          <a-button type="primary"><PlusOutlined /> 创建项目</a-button>
+          <a-button type="primary" @click="action.openCreate('创建项目')"><PlusOutlined /> 创建项目</a-button>
         </a-space>
       </template>
     </PageHeader>
@@ -26,7 +26,7 @@
             <a-select-option value="archived">已归档</a-select-option>
           </a-select>
         </a-col>
-        <a-col :span="4"><a-button type="primary" block>查询</a-button></a-col>
+        <a-col :span="4"><a-button type="primary" block @click="action.notify('查询', '项目列表')">查询</a-button></a-col>
       </a-row>
     </div>
 
@@ -54,8 +54,8 @@
             <div class="flex-between">
               <span class="text-secondary">更新于 {{ p.updateTime }}</span>
               <a-space>
-                <a-button type="primary" size="small" ghost>进入</a-button>
-                <a-button size="small">设置</a-button>
+                <a-button type="primary" size="small" ghost @click="router.push('/dashboard')">进入</a-button>
+                <a-button size="small" @click="action.openEdit('项目设置', p.name)">设置</a-button>
               </a-space>
             </div>
           </div>
@@ -80,9 +80,9 @@
             <a-badge :status="record.status === 'active' ? 'success' : 'default'" :text="record.status === 'active' ? '活跃' : '已归档'" />
           </template>
           <template v-else-if="column.key === 'action'">
-            <a-button type="link" size="small">进入</a-button>
-            <a-button type="link" size="small">设置</a-button>
-            <a-button type="link" size="small" danger>归档</a-button>
+            <a-button type="link" size="small" @click="router.push('/dashboard')">进入</a-button>
+            <a-button type="link" size="small" @click="action.openEdit('项目设置', record.name)">设置</a-button>
+            <a-button type="link" size="small" danger @click="action.confirmAction('归档项目', record.name)">归档</a-button>
           </template>
         </template>
       </a-table>
@@ -92,6 +92,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import PageHeader from '@/components/PageHeader.vue'
 import {
   PlusOutlined, SearchOutlined, AppstoreOutlined, UnorderedListOutlined,
@@ -99,6 +100,10 @@ import {
 } from '@ant-design/icons-vue'
 import { projectList } from '@/utils/mock'
 import { formatNumber } from '@/utils/mock'
+import { useAction } from '@/composables/useAction'
+
+const router = useRouter()
+const action = useAction()
 
 const viewMode = ref('grid')
 const search = ref('')

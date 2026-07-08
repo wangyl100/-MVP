@@ -3,11 +3,11 @@
     <PageHeader title="关系管理" description="管理知识图谱中的关系数据，支持关系增删改查与批量操作">
       <template #extra>
         <a-space>
-          <a-button>
+          <a-button @click="action.notify('批量导入', '关系')">
             <template #icon><UploadOutlined /></template>
             批量导入
           </a-button>
-          <a-button type="primary">
+          <a-button type="primary" @click="action.openCreate('新增关系', '请填写头实体、关系类型、尾实体。')">
             <template #icon><PlusOutlined /></template>
             新增关系
           </a-button>
@@ -68,16 +68,16 @@
         </a-form-item>
         <a-form-item>
           <a-space>
-            <a-button type="primary"><template #icon><SearchOutlined /></template>查询</a-button>
-            <a-button>重置</a-button>
+            <a-button type="primary" @click="action.notify('查询', '关系列表')"><template #icon><SearchOutlined /></template>查询</a-button>
+            <a-button @click="action.info('已重置筛选条件')">重置</a-button>
           </a-space>
         </a-form-item>
       </a-form>
 
       <div class="flex-between mb-16">
         <a-space>
-          <a-button :disabled="!selectedKeys.length">批量删除</a-button>
-          <a-button :disabled="!selectedKeys.length">导出选中</a-button>
+          <a-button :disabled="!selectedKeys.length" @click="action.confirmDelete('选中关系')">批量删除</a-button>
+          <a-button :disabled="!selectedKeys.length" @click="action.notify('导出', '选中关系')">导出选中</a-button>
           <span v-if="selectedKeys.length" class="text-secondary">已选 {{ selectedKeys.length }} 项</span>
         </a-space>
         <a-tag color="blue">共 {{ filteredList.length }} 条关系</a-tag>
@@ -110,9 +110,9 @@
             </span>
           </template>
           <template v-else-if="column.key === 'action'">
-            <a-button type="link" size="small" @click="showDetail(record)">详情</a-button>
-            <a-button type="link" size="small">编辑</a-button>
-            <a-popconfirm title="确认删除该关系？" ok-text="删除" cancel-text="取消">
+            <a-button type="link" size="small" @click="action.openDetail('关系详情', record)">详情</a-button>
+            <a-button type="link" size="small" @click="action.openEdit('关系', record.relation)">编辑</a-button>
+            <a-popconfirm title="确认删除该关系？" ok-text="删除" cancel-text="取消" @confirm="action.confirmDelete(record.relation)">
               <a-button type="link" size="small" danger>删除</a-button>
             </a-popconfirm>
           </template>
@@ -159,6 +159,9 @@ import { PageHeader } from '@/components/PageHeader.vue'
 import EChart from '@/components/EChart.vue'
 import { relationList, schemaRelationTypes, statisticsData } from '@/utils/mock'
 import { PlusOutlined, SearchOutlined, UploadOutlined } from '@ant-design/icons-vue'
+import { useAction } from '@/composables/useAction'
+
+const action = useAction()
 
 const sourceColor: Record<string, string> = {
   'LLM抽取': 'blue', '结构化导入': 'green', 'DL抽取': 'orange', '手动添加': 'default'

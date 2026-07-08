@@ -2,7 +2,7 @@
   <div class="page-container">
     <PageHeader title="标注任务" description="管理数据标注任务的创建、分配与状态">
       <template #extra>
-        <a-button type="primary"><PlusOutlined /> 创建标注任务</a-button>
+        <a-button type="primary" @click="action.openCreate('创建标注任务', '请填写任务名称、类型、标注人员及截止日期等信息')"><PlusOutlined /> 创建标注任务</a-button>
       </template>
     </PageHeader>
 
@@ -33,8 +33,8 @@
           </template>
           <template v-else-if="column.key === 'action'">
             <a-button type="link" size="small" @click="$router.push('/annotation/workspace')">标注</a-button>
-            <a-button type="link" size="small">分配</a-button>
-            <a-button type="link" size="small" danger>关闭</a-button>
+            <a-button type="link" size="small" @click="action.notify('分配', record.name || '任务')">分配</a-button>
+            <a-button type="link" size="small" danger @click="action.notify('关闭', record.name || '任务')">关闭</a-button>
           </template>
         </template>
       </a-table>
@@ -70,7 +70,7 @@
               <div class="text-secondary" style="font-size:12px">手动指定每个标注人员的任务量</div>
             </a-radio>
           </a-radio-group>
-          <a-button type="primary" block style="margin-top:16px">执行分配</a-button>
+          <a-button type="primary" block style="margin-top:16px" @click="action.notify('执行分配', '标注任务')">执行分配</a-button>
         </div>
       </a-col>
     </a-row>
@@ -82,6 +82,9 @@ import { ref } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
 import { PlusOutlined, EditOutlined, AuditOutlined, TeamOutlined, CheckCircleOutlined } from '@ant-design/icons-vue'
 import { annotationTasks } from '@/utils/mock'
+import { useAction } from '@/composables/useAction'
+
+const action = useAction()
 
 const stats = [
   { title: '标注任务', value: 12, color: 'linear-gradient(135deg,#1677ff,#4096ff)', icon: EditOutlined },

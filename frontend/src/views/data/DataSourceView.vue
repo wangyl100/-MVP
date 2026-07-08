@@ -2,7 +2,7 @@
   <div class="page-container">
     <PageHeader title="数据接入" description="多源异构数据接入、数据源管理与导入任务监控">
       <template #extra>
-        <a-button type="primary"><PlusOutlined /> 新增数据源</a-button>
+        <a-button type="primary" @click="action.openCreate('新增数据源', '请选择数据源类型并填写连接配置。')"><PlusOutlined /> 新增数据源</a-button>
       </template>
     </PageHeader>
 
@@ -40,10 +40,10 @@
             <a-badge :status="statusMap[record.status].status" :text="statusMap[record.status].text" />
           </template>
           <template v-else-if="column.key === 'action'">
-            <a-button type="link" size="small">测试</a-button>
-            <a-button type="link" size="small">导入</a-button>
-            <a-button type="link" size="small">编辑</a-button>
-            <a-button type="link" size="small" danger>删除</a-button>
+            <a-button type="link" size="small" @click="action.testConnection(record.name)">测试</a-button>
+            <a-button type="link" size="small" @click="action.notify('导入', record.name)">导入</a-button>
+            <a-button type="link" size="small" @click="action.openEdit('数据源', record.name)">编辑</a-button>
+            <a-button type="link" size="small" danger @click="action.confirmDelete(record.name)">删除</a-button>
           </template>
         </template>
       </a-table>
@@ -73,6 +73,9 @@ import {
   CloudServerOutlined, TableOutlined, CheckCircleOutlined
 } from '@ant-design/icons-vue'
 import { dataSourceList } from '@/utils/mock'
+import { useAction } from '@/composables/useAction'
+
+const action = useAction()
 
 const stats = [
   { title: '数据源总数', value: 6, color: 'linear-gradient(135deg,#1677ff,#4096ff)', icon: DatabaseOutlined },

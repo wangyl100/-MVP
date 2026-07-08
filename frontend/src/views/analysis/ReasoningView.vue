@@ -65,7 +65,7 @@
             <h3 style="margin:0;font-size:16px">推理结果</h3>
             <a-space>
               <a-tag color="blue">发现 {{ resultList.length }} 条新关系</a-tag>
-              <a-button size="small"><DownloadOutlined /> 导出</a-button>
+              <a-button size="small" @click="action.notify('导出', '推理结果')"><DownloadOutlined /> 导出</a-button>
             </a-space>
           </div>
           <a-table
@@ -84,8 +84,8 @@
                 <a-tag color="purple">{{ record.rule }}</a-tag>
               </template>
               <template v-else-if="column.key === 'action'">
-                <a-button type="link" size="small">采纳</a-button>
-                <a-button type="link" size="small" danger>拒绝</a-button>
+                <a-button type="link" size="small" @click="action.notify('采纳', record.source + '→' + record.target)">采纳</a-button>
+                <a-button type="link" size="small" danger @click="action.notify('拒绝', record.source + '→' + record.target)">拒绝</a-button>
               </template>
             </template>
           </a-table>
@@ -131,9 +131,12 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { PageHeader } from '@/components/PageHeader.vue'
+import { useAction } from '@/composables/useAction'
 import EChart from '@/components/EChart.vue'
 import { message } from 'ant-design-vue'
 import { ThunderboltOutlined, DownloadOutlined } from '@ant-design/icons-vue'
+
+const action = useAction()
 
 const engine = ref<'rule' | 'transE' | 'gnn'>('rule')
 const depth = ref(3)

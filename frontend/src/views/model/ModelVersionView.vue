@@ -25,10 +25,10 @@
                   <a-tag>数据: {{ v.dataset }}</a-tag>
                 </a-space>
                 <div style="margin-top:8px">
-                  <a-button type="link" size="small" v-if="i!==0">上线</a-button>
-                  <a-button type="link" size="small" v-if="i!==0">回滚</a-button>
-                  <a-button type="link" size="small">详情</a-button>
-                  <a-button type="link" size="small">导出</a-button>
+                  <a-button type="link" size="small" v-if="i!==0" @click="action.confirmAction('上线版本', v.version)">上线</a-button>
+                  <a-button type="link" size="small" v-if="i!==0" @click="action.confirmAction('回滚版本', v.version)">回滚</a-button>
+                  <a-button type="link" size="small" @click="action.openDetail('版本详情', v)">详情</a-button>
+                  <a-button type="link" size="small" @click="action.notify('导出', v.version)">导出</a-button>
                 </div>
               </div>
             </a-timeline-item>
@@ -54,8 +54,8 @@
               </template>
               <template v-else-if="column.key === 'f1'"><a-tag color="green">{{ (record.f1*100).toFixed(1) }}%</a-tag></template>
               <template v-else-if="column.key === 'action'">
-                <a-button type="link" size="small">版本</a-button>
-                <a-button type="link" size="small">导出</a-button>
+                <a-button type="link" size="small" @click="action.openDetail('模型版本', record)">版本</a-button>
+                <a-button type="link" size="small" @click="action.notify('导出', record.name)">导出</a-button>
               </template>
             </template>
           </a-table>
@@ -70,6 +70,9 @@ import { ref, computed } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
 import EChart from '@/components/EChart.vue'
 import { modelList } from '@/utils/mock'
+import { useAction } from '@/composables/useAction'
+
+const action = useAction()
 
 const versions = [
   { version: 'v2.3.1', time: '2026-07-04', desc: '修复医疗术语边界识别问题，提升长实体识别', f1: '89.2%', precision: '90.1%', recall: '88.4%', dataset: '12,580', tag: 'current' },

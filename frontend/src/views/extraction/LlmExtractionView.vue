@@ -3,8 +3,8 @@
     <PageHeader title="大模型抽取" description="利用 LLM 从非结构化文本中零样本/少样本抽取实体、关系、属性">
       <template #extra>
         <a-space>
-          <a-button><SettingOutlined /> Prompt 管理</a-button>
-          <a-button type="primary"><PlusOutlined /> 新建抽取任务</a-button>
+          <a-button @click="action.notify('打开', 'Prompt 管理')"><SettingOutlined /> Prompt 管理</a-button>
+          <a-button type="primary" @click="action.openCreate('新建抽取任务', '请填写任务名称、选择模型与待抽取语料')"><PlusOutlined /> 新建抽取任务</a-button>
         </a-space>
       </template>
     </PageHeader>
@@ -68,8 +68,8 @@
       <div class="flex-between mb-16">
         <h3 style="margin:0;font-size:16px">抽取结果（高亮展示）</h3>
         <a-space>
-          <a-button size="small"><CheckOutlined /> 全部确认</a-button>
-          <a-button size="small"><DownloadOutlined /> 导出</a-button>
+          <a-button size="small" @click="action.notify('确认', '全部抽取结果')"><CheckOutlined /> 全部确认</a-button>
+          <a-button size="small" @click="action.notify('导出', '抽取结果')"><DownloadOutlined /> 导出</a-button>
         </a-space>
       </div>
       <div class="highlight-text" v-html="highlightedText"></div>
@@ -83,8 +83,8 @@
                 <a-progress :percent="record.confidence*100" :stroke-color="record.confidence>0.85?'#52c41a':'#faad14'" size="small" />
               </template>
               <template v-else-if="column.key === 'action'">
-                <a-button type="link" size="small">确认</a-button>
-                <a-button type="link" size="small" danger>删除</a-button>
+                <a-button type="link" size="small" @click="action.notify('确认', record.name)">确认</a-button>
+                <a-button type="link" size="small" danger @click="action.confirmDelete(record.name)">删除</a-button>
               </template>
             </template>
           </a-table>
@@ -109,7 +109,7 @@
     <div class="page-card">
       <div class="flex-between mb-16">
         <h3 style="margin:0;font-size:16px">批量抽取任务</h3>
-        <a-button type="primary" size="small"><PlusOutlined /> 创建批量任务</a-button>
+        <a-button type="primary" size="small" @click="action.openCreate('创建批量任务', '请填写任务名称、选择模型与语料范围')"><PlusOutlined /> 创建批量任务</a-button>
       </div>
       <a-table :columns="taskColumns" :data-source="extractionTasks" row-key="id" :pagination="{pageSize:8}">
         <template #bodyCell="{ column, record }">
@@ -122,8 +122,8 @@
             <a-badge :status="taskStatus[record.status].status" :text="taskStatus[record.status].text" />
           </template>
           <template v-else-if="column.key === 'action'">
-            <a-button type="link" size="small">详情</a-button>
-            <a-button type="link" size="small" v-if="record.status==='failed'">重试</a-button>
+            <a-button type="link" size="small" @click="action.openDetail('批量任务', record)">详情</a-button>
+            <a-button type="link" size="small" v-if="record.status==='failed'" @click="action.notify('重试', record.name)">重试</a-button>
           </template>
         </template>
       </a-table>
@@ -139,7 +139,9 @@ import {
   CheckOutlined, DownloadOutlined
 } from '@ant-design/icons-vue'
 import { extractionTasks } from '@/utils/mock'
+import { useAction } from '@/composables/useAction'
 
+const action = useAction()
 const model = ref('gpt-4')
 const threshold = ref(0.7)
 const extracting = ref(false)

@@ -122,7 +122,7 @@
           <h3 style="margin:0 0 12px;font-size:15px">对话历史</h3>
           <a-list :data-source="historyList" size="small">
             <template #renderItem="{ item }">
-              <a-list-item style="padding:8px 0;cursor:pointer">
+              <a-list-item style="padding:8px 0;cursor:pointer" @click="action.info('加载对话：' + item.title + '（演示）')">
                 <a-list-item-meta :title="item.title" :description="item.time">
                   <template #avatar><MessageOutlined style="color:#9ca3af" /></template>
                 </a-list-item-meta>
@@ -149,12 +149,15 @@
 <script setup lang="ts">
 import { ref, nextTick } from 'vue'
 import { PageHeader } from '@/components/PageHeader.vue'
+import { useAction } from '@/composables/useAction'
 import { qaExamples, qaHistory } from '@/utils/mock'
 import {
   RobotOutlined, UserOutlined, MessageOutlined,
   SendOutlined, ClearOutlined, LinkOutlined, QuestionCircleOutlined, CheckCircleFilled,
   ThunderboltOutlined, TeamOutlined, DatabaseOutlined
 } from '@ant-design/icons-vue'
+
+const action = useAction()
 
 const stats = [
   { label: '今日提问', value: 326, icon: MessageOutlined, color: '#1677ff', bg: '#e6f4ff' },

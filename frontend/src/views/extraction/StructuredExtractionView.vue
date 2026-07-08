@@ -44,7 +44,7 @@
             <div class="target-mapped">
               <a-space wrap>
                 <a-tag v-for="s in m.sources" :key="s" closable color="blue">{{ s }}</a-tag>
-                <a-button type="dashed" size="small"><PlusOutlined /> 添加字段</a-button>
+                <a-button type="dashed" size="small" @click="action.openCreate('添加字段', '为「' + m.target + '」添加来源字段')"><PlusOutlined /> 添加字段</a-button>
               </a-space>
             </div>
           </div>
@@ -101,8 +101,8 @@
                 <template #avatar><a-avatar :style="{background:item.color}"><TableOutlined /></a-avatar></template>
               </a-card-meta>
               <template #actions>
-                <a-button type="link" size="small">使用</a-button>
-                <a-button type="link" size="small">编辑</a-button>
+                <a-button type="link" size="small" @click="action.info('已载入示例（演示）')">使用</a-button>
+                <a-button type="link" size="small" @click="action.openEdit('映射模板', item.name)">编辑</a-button>
               </template>
             </a-card>
           </a-list-item>
@@ -117,7 +117,9 @@ import { ref } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
 import { PlusOutlined, DatabaseOutlined, TableOutlined } from '@ant-design/icons-vue'
 import { projectList } from '@/utils/mock'
+import { useAction } from '@/composables/useAction'
 
+const action = useAction()
 const step = ref(1)
 const selectedTable = ref('users')
 

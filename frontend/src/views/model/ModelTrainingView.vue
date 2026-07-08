@@ -2,7 +2,7 @@
   <div class="page-container">
     <PageHeader title="模型训练" description="深度学习模型训练全流程管理与监控">
       <template #extra>
-        <a-button type="primary"><PlusOutlined /> 创建训练任务</a-button>
+        <a-button type="primary" @click="action.openCreate('创建训练任务', '请填写训练任务名称、基础模型、训练数据集及超参数配置')"><PlusOutlined /> 创建训练任务</a-button>
       </template>
     </PageHeader>
 
@@ -31,9 +31,9 @@
                 <span style="font-size:11px;color:#6b7280">{{ record.epoch }}</span>
               </template>
               <template v-else-if="column.key === 'action'">
-                <a-button type="link" size="small" v-if="record.status==='running'">暂停</a-button>
-                <a-button type="link" size="small">详情</a-button>
-                <a-button type="link" size="small" danger v-if="record.status==='running'">停止</a-button>
+                <a-button type="link" size="small" v-if="record.status==='running'" @click="action.confirmAction('暂停训练', record.name)">暂停</a-button>
+                <a-button type="link" size="small" @click="action.openDetail('训练任务详情', record)">详情</a-button>
+                <a-button type="link" size="small" danger v-if="record.status==='running'" @click="action.confirmAction('停止训练', record.name)">停止</a-button>
               </template>
             </template>
           </a-table>
@@ -83,7 +83,7 @@
               <a-descriptions-item label="Batch">{{ t.batch }}</a-descriptions-item>
               <a-descriptions-item label="Epoch">{{ t.epoch }}</a-descriptions-item>
             </a-descriptions>
-            <a-button type="primary" size="small" block style="margin-top:8px">使用模板</a-button>
+            <a-button type="primary" size="small" block style="margin-top:8px" @click="action.notify('使用模板', t.name)">使用模板</a-button>
           </a-card>
         </a-col>
       </a-row>
@@ -97,6 +97,9 @@ import PageHeader from '@/components/PageHeader.vue'
 import EChart from '@/components/EChart.vue'
 import { PlusOutlined, ExperimentOutlined, DashboardOutlined, ThunderboltOutlined, CheckCircleOutlined } from '@ant-design/icons-vue'
 import { trainingTasks } from '@/utils/mock'
+import { useAction } from '@/composables/useAction'
+
+const action = useAction()
 
 const stats = [
   { title: '训练任务', value: 8, color: 'linear-gradient(135deg,#1677ff,#4096ff)', icon: ExperimentOutlined },

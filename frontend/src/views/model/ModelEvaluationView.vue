@@ -77,7 +77,7 @@
     <div class="page-card">
       <div class="flex-between mb-16">
         <h3 style="margin:0;font-size:16px">Badcase 管理</h3>
-        <a-button type="primary" size="small"><PlusOutlined /> 添加 Badcase</a-button>
+        <a-button type="primary" size="small" @click="action.openCreate('添加 Badcase', '请填写 Badcase 文本、预测结果、真实标注及错误类型')"><PlusOutlined /> 添加 Badcase</a-button>
       </div>
       <a-table :columns="badCols" :data-source="badcases" row-key="id" :pagination="{pageSize:6}">
         <template #bodyCell="{ column, record }">
@@ -97,6 +97,9 @@ import PageHeader from '@/components/PageHeader.vue'
 import EChart from '@/components/EChart.vue'
 import { PlusOutlined, ThunderboltOutlined } from '@ant-design/icons-vue'
 import { modelList } from '@/utils/mock'
+import { useAction } from '@/composables/useAction'
+
+const action = useAction()
 
 const evalModels = modelList.filter((m) => m.f1 > 0)
 const modelId = ref(evalModels[0]?.id)

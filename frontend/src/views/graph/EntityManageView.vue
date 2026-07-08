@@ -3,11 +3,11 @@
     <PageHeader title="实体管理" description="管理知识图谱中的实体数据，支持增删改查与批量操作">
       <template #extra>
         <a-space>
-          <a-button>
+          <a-button @click="action.notify('批量导入', '实体')">
             <template #icon><UploadOutlined /></template>
             批量导入
           </a-button>
-          <a-button type="primary">
+          <a-button type="primary" @click="action.openCreate('新增实体', '请填写实体名称、类型、属性等信息。')">
             <template #icon><PlusOutlined /></template>
             新增实体
           </a-button>
@@ -76,17 +76,17 @@
         </a-form-item>
         <a-form-item>
           <a-space>
-            <a-button type="primary"><template #icon><SearchOutlined /></template>查询</a-button>
-            <a-button>重置</a-button>
+            <a-button type="primary" @click="action.notify('查询', '实体列表')"><template #icon><SearchOutlined /></template>查询</a-button>
+            <a-button @click="action.info('已重置筛选条件')">重置</a-button>
           </a-space>
         </a-form-item>
       </a-form>
 
       <div class="flex-between mb-16">
         <a-space>
-          <a-button :disabled="!selectedKeys.length">批量删除</a-button>
-          <a-button :disabled="!selectedKeys.length">批量合并</a-button>
-          <a-button :disabled="!selectedKeys.length">导出选中</a-button>
+          <a-button :disabled="!selectedKeys.length" @click="action.confirmDelete('选中实体')">批量删除</a-button>
+          <a-button :disabled="!selectedKeys.length" @click="action.openCreate('批量合并实体', '请选择合并目标实体。')">批量合并</a-button>
+          <a-button :disabled="!selectedKeys.length" @click="action.notify('导出', '选中实体')">导出选中</a-button>
           <span v-if="selectedKeys.length" class="text-secondary">已选 {{ selectedKeys.length }} 项</span>
         </a-space>
         <a-radio-group v-model:value="viewMode" button-style="solid" size="small">
@@ -119,9 +119,9 @@
               :stroke-color="record.confidence >= 0.9 ? '#52c41a' : record.confidence >= 0.7 ? '#faad14' : '#ff4d4f'" />
           </template>
           <template v-else-if="column.key === 'action'">
-            <a-button type="link" size="small" @click="showDetail(record)">详情</a-button>
-            <a-button type="link" size="small">编辑</a-button>
-            <a-popconfirm title="确认删除该实体？" ok-text="删除" cancel-text="取消">
+            <a-button type="link" size="small" @click="action.openDetail('实体详情', record)">详情</a-button>
+            <a-button type="link" size="small" @click="action.openEdit('实体', record.name)">编辑</a-button>
+            <a-popconfirm title="确认删除该实体？" ok-text="删除" cancel-text="取消" @confirm="action.confirmDelete(record.name)">
               <a-button type="link" size="small" danger>删除</a-button>
             </a-popconfirm>
           </template>
@@ -190,6 +190,9 @@ import {
   PlusOutlined, SearchOutlined, UploadOutlined, TableOutlined, AppstoreOutlined,
   NodeIndexOutlined, ShareAltOutlined, DatabaseOutlined, ApartmentOutlined
 } from '@ant-design/icons-vue'
+import { useAction } from '@/composables/useAction'
+
+const action = useAction()
 
 const stats = [
   { label: '实体总数', value: dashboardStats.entityCount.toLocaleString(), icon: NodeIndexOutlined, color: '#1677ff', bg: '#e6f4ff' },

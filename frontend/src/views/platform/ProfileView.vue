@@ -26,7 +26,7 @@
           <a-tab-pane key="info" tab="基本信息">
             <a-form layout="vertical" style="max-width: 480px">
               <a-form-item label="头像">
-                <a-upload :show-upload-list="false"><a-button><UploadOutlined /> 更换头像</a-button></a-upload>
+                <a-upload :show-upload-list="false" @change="action.notify('上传', '头像')"><a-button><UploadOutlined /> 更换头像</a-button></a-upload>
               </a-form-item>
               <a-form-item label="昵称"><a-input :value="userInfo.nickname" /></a-form-item>
               <a-form-item label="邮箱"><a-input :value="userInfo.email" /></a-form-item>
@@ -34,7 +34,7 @@
               <a-form-item label="个人简介">
                 <a-textarea :rows="3" value="从事知识图谱与大模型应用研发工作。" />
               </a-form-item>
-              <a-form-item><a-button type="primary">保存修改</a-button></a-form-item>
+              <a-form-item><a-button type="primary" @click="action.notify('保存', '个人信息')">保存修改</a-button></a-form-item>
             </a-form>
           </a-tab-pane>
 
@@ -43,7 +43,7 @@
               <a-form-item label="原密码"><a-input-password placeholder="请输入原密码" /></a-form-item>
               <a-form-item label="新密码"><a-input-password placeholder="请输入新密码" /></a-form-item>
               <a-form-item label="确认密码"><a-input-password placeholder="请再次输入" /></a-form-item>
-              <a-form-item><a-button type="primary">更新密码</a-button></a-form-item>
+              <a-form-item><a-button type="primary" @click="action.notify('更新', '密码')">更新密码</a-button></a-form-item>
             </a-form>
           </a-tab-pane>
 
@@ -65,13 +65,13 @@
                     </template>
                   </a-list-item-meta>
                   <template #actions>
-                    <a-button type="link" size="small">编辑</a-button>
+                    <a-button type="link" size="small" @click="action.openEdit('模型配置', item.name)">编辑</a-button>
                     <a-switch :checked="item.active" size="small" />
                   </template>
                 </a-list-item>
               </template>
             </a-list>
-            <a-button type="dashed" block style="margin-top: 16px"><PlusOutlined /> 添加模型配置</a-button>
+            <a-button type="dashed" block style="margin-top: 16px" @click="action.openCreate('添加模型配置', '请填写模型名称、API Key 及调用参数。')"><PlusOutlined /> 添加模型配置</a-button>
           </a-tab-pane>
 
           <a-tab-pane key="apikey" tab="API 密钥">
@@ -84,11 +84,11 @@
                   <a-badge :status="record.status === 'active' ? 'success' : 'error'" :text="record.status === 'active' ? '启用' : '已禁用'" />
                 </template>
                 <template v-else-if="column.key === 'action'">
-                  <a-button type="link" size="small" danger>禁用</a-button>
+                  <a-button type="link" size="small" danger @click="action.confirmAction('禁用密钥', record.name)">禁用</a-button>
                 </template>
               </template>
             </a-table>
-            <a-button type="primary" style="margin-top: 16px"><PlusOutlined /> 生成新密钥</a-button>
+            <a-button type="primary" style="margin-top: 16px" @click="action.openCreate('生成新密钥', '将为当前账户生成一个新的 API Key，请妥善保存。')"><PlusOutlined /> 生成新密钥</a-button>
           </a-tab-pane>
 
           <a-tab-pane key="log" tab="操作日志">
@@ -110,6 +110,9 @@ import { ref, computed } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
 import { useAppStore } from '@/stores/app'
 import { PlusOutlined, UploadOutlined } from '@ant-design/icons-vue'
+import { useAction } from '@/composables/useAction'
+
+const action = useAction()
 
 const appStore = useAppStore()
 const userInfo = computed(() => appStore.userInfo)

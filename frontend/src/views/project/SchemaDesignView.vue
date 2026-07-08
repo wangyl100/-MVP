@@ -3,9 +3,9 @@
     <PageHeader title="图谱模型" description="定义知识图谱的本体结构：实体类型、关系类型、属性定义">
       <template #extra>
         <a-space>
-          <a-button><RobotOutlined /> AI 生成 Schema</a-button>
-          <a-button><DownloadOutlined /> 导入</a-button>
-          <a-button type="primary"><SaveOutlined /> 保存</a-button>
+          <a-button @click="action.openCreate('AI 生成 Schema', '基于大模型自动生成 Schema 定义。')"><RobotOutlined /> AI 生成 Schema</a-button>
+          <a-button @click="action.notify('导入', 'Schema')"><DownloadOutlined /> 导入</a-button>
+          <a-button type="primary" @click="action.notify('保存', 'Schema 定义')"><SaveOutlined /> 保存</a-button>
         </a-space>
       </template>
     </PageHeader>
@@ -16,7 +16,7 @@
         <div class="page-card">
           <div class="flex-between mb-16">
             <h3 style="margin:0;font-size:16px">实体类型（{{ schemaEntityTypes.length }}）</h3>
-            <a-button type="primary" size="small"><PlusOutlined /> 新增</a-button>
+            <a-button type="primary" size="small" @click="action.openCreate('新增 Schema 字段')"><PlusOutlined /> 新增</a-button>
           </div>
           <a-list :data-source="schemaEntityTypes" item-layout="horizontal">
             <template #renderItem="{ item }">
@@ -39,8 +39,8 @@
                   </template>
                 </a-list-item-meta>
                 <template #actions>
-                  <a-button type="link" size="small">编辑</a-button>
-                  <a-button type="link" size="small" danger>删除</a-button>
+                  <a-button type="link" size="small" @click="action.openEdit('实体类型', item.name)">编辑</a-button>
+                  <a-button type="link" size="small" danger @click="action.confirmDelete(item.name)">删除</a-button>
                 </template>
               </a-list-item>
             </template>
@@ -53,7 +53,7 @@
         <div class="page-card">
           <div class="flex-between mb-16">
             <h3 style="margin:0;font-size:16px">关系类型（{{ schemaRelationTypes.length }}）</h3>
-            <a-button type="primary" size="small"><PlusOutlined /> 新增</a-button>
+            <a-button type="primary" size="small" @click="action.openCreate('新增 Schema 字段')"><PlusOutlined /> 新增</a-button>
           </div>
           <a-table :columns="relColumns" :data-source="schemaRelationTypes" :pagination="false" size="small" row-key="id">
             <template #bodyCell="{ column, record }">
@@ -66,8 +66,8 @@
                 <a-tag color="blue">{{ record.target }}</a-tag>
               </template>
               <template v-else-if="column.key === 'action'">
-                <a-button type="link" size="small">编辑</a-button>
-                <a-button type="link" size="small" danger>删除</a-button>
+                <a-button type="link" size="small" @click="action.openEdit('关系类型', record.name)">编辑</a-button>
+                <a-button type="link" size="small" danger @click="action.confirmDelete(record.name)">删除</a-button>
               </template>
             </template>
           </a-table>
@@ -122,6 +122,9 @@ import PageHeader from '@/components/PageHeader.vue'
 import { PlusOutlined, SaveOutlined, DownloadOutlined, RobotOutlined, BulbOutlined, ArrowRightOutlined } from '@ant-design/icons-vue'
 import { schemaEntityTypes, schemaRelationTypes, formatNumber } from '@/utils/mock'
 import { Graph } from '@antv/g6'
+import { useAction } from '@/composables/useAction'
+
+const action = useAction()
 
 const aiInput = ref('')
 const aiLoading = ref(false)

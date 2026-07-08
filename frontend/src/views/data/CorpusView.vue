@@ -3,8 +3,8 @@
     <PageHeader title="语料管理" description="统一管理知识抽取与模型训练的语料数据">
       <template #extra>
         <a-space>
-          <a-button><FolderOpenOutlined /> 新建语料集</a-button>
-          <a-upload :show-upload-list="false" multiple>
+          <a-button @click="action.openCreate('新建语料集', '请填写语料集名称、类型及描述。')"><FolderOpenOutlined /> 新建语料集</a-button>
+          <a-upload :show-upload-list="false" multiple @change="action.notify('上传', '语料文件')">
             <a-button type="primary"><CloudUploadOutlined /> 上传语料</a-button>
           </a-upload>
         </a-space>
@@ -46,8 +46,8 @@
           </a-select>
         </a-space>
         <a-space>
-          <a-button>批量导出</a-button>
-          <a-button danger>批量删除</a-button>
+          <a-button @click="action.notify('批量导出', '语料')">批量导出</a-button>
+          <a-button danger @click="action.confirmDelete('选中语料')">批量删除</a-button>
         </a-space>
       </div>
       <a-table :columns="columns" :data-source="filtered" row-key="id" :pagination="{pageSize:10, showTotal:(t:number)=>`共 ${t} 条`}" :row-selection="{ selectedRowKeys: selectedKeys, onChange: (k:any)=>selectedKeys=k }">
@@ -66,8 +66,8 @@
           </template>
           <template v-else-if="column.key === 'action'">
             <a-button type="link" size="small" @click="previewVisible = true; previewFile = record">预览</a-button>
-            <a-button type="link" size="small">抽取</a-button>
-            <a-button type="link" size="small" danger>删除</a-button>
+            <a-button type="link" size="small" @click="action.notify('抽取', record.name)">抽取</a-button>
+            <a-button type="link" size="small" danger @click="action.confirmDelete(record.name || record.id)">删除</a-button>
           </template>
         </template>
       </a-table>
@@ -93,6 +93,9 @@ import {
   DatabaseOutlined, ReadOutlined, GlobalOutlined
 } from '@ant-design/icons-vue'
 import { corpusList, formatNumber } from '@/utils/mock'
+import { useAction } from '@/composables/useAction'
+
+const action = useAction()
 
 const stats = [
   { title: '语料总数', value: formatNumber(8543), color: 'linear-gradient(135deg,#1677ff,#4096ff)', icon: FileTextOutlined },

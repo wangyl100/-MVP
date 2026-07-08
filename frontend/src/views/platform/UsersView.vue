@@ -3,7 +3,7 @@
     <PageHeader title="用户管理" description="管理平台用户账号、角色分配与状态">
       <template #extra>
         <a-space>
-          <a-button>
+          <a-button @click="action.notify('批量导入')">
             <UploadOutlined /> 批量导入
           </a-button>
           <a-button type="primary" @click="modalVisible = true">
@@ -32,7 +32,7 @@
           </a-select>
         </a-form-item>
         <a-form-item>
-          <a-button type="primary"><SearchOutlined /> 查询</a-button>
+          <a-button type="primary" @click="action.notify('查询', '用户列表')"><SearchOutlined /> 查询</a-button>
         </a-form-item>
       </a-form>
 
@@ -54,11 +54,11 @@
             <a-badge :status="statusMap[record.status].status" :text="statusMap[record.status].text" />
           </template>
           <template v-else-if="column.key === 'action'">
-            <a-button type="link" size="small">编辑</a-button>
+            <a-button type="link" size="small" @click="action.openEdit('用户', record.nickname)">编辑</a-button>
             <a-divider type="vertical" />
-            <a-button type="link" size="small">详情</a-button>
+            <a-button type="link" size="small" @click="action.openDetail('用户', record)">详情</a-button>
             <a-divider type="vertical" />
-            <a-popconfirm title="确定删除该用户吗？" ok-text="确定" cancel-text="取消">
+            <a-popconfirm title="确定删除该用户吗？" ok-text="确定" cancel-text="取消" @confirm="action.confirmDelete(record.nickname)">
               <a-button type="link" size="small" danger>删除</a-button>
             </a-popconfirm>
           </template>
@@ -93,6 +93,9 @@ import { ref, computed } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
 import { PlusOutlined, UploadOutlined, SearchOutlined } from '@ant-design/icons-vue'
 import { userList, roleList } from '@/utils/mock'
+import { useAction } from '@/composables/useAction'
+
+const action = useAction()
 
 const filters = ref({ keyword: '', role: undefined as any, status: undefined as any })
 const modalVisible = ref(false)

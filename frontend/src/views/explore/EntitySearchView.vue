@@ -104,9 +104,9 @@
                   </span>
                 </div>
                 <template #actions>
-                  <span><NodeIndexOutlined /> 详情</span>
-                  <span><ShareAltOutlined /> 关系图</span>
-                  <span><ExportOutlined /> 导出</span>
+                  <span @click="action.openDetail('实体', item)"><NodeIndexOutlined /> 详情</span>
+                  <span @click="action.info('关系图（演示）')"><ShareAltOutlined /> 关系图</span>
+                  <span @click="action.notify('导出', item.name)"><ExportOutlined /> 导出</span>
                 </template>
               </a-list-item>
             </template>
@@ -187,11 +187,14 @@
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue'
 import { PageHeader } from '@/components/PageHeader.vue'
+import { useAction } from '@/composables/useAction'
 import { entityList, schemaEntityTypes } from '@/utils/mock'
 import {
   UnorderedListOutlined, AppstoreOutlined, NodeIndexOutlined,
   ShareAltOutlined, ExportOutlined
 } from '@ant-design/icons-vue'
+
+const action = useAction()
 
 const typeColor: Record<string, string> = {
   '人物': 'blue', '机构': 'green', '地点': 'gold', '事件': 'red', '概念': 'purple', '作品': 'cyan'

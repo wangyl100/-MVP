@@ -8,7 +8,7 @@
             <a-button :type="mode==='relation'?'primary':'default'" @click="mode='relation'">关系标注</a-button>
             <a-button :type="mode==='attribute'?'primary':'default'" @click="mode='attribute'">属性标注</a-button>
           </a-button-group>
-          <a-button type="primary"><SaveOutlined /> 提交标注</a-button>
+          <a-button type="primary" @click="action.notify('提交标注', '当前任务')"><SaveOutlined /> 提交标注</a-button>
         </a-space>
       </template>
     </PageHeader>
@@ -24,9 +24,9 @@
               <a-tag color="purple">准确率：95.2%</a-tag>
             </a-space>
             <a-space>
-              <a-tooltip title="撤销 (Ctrl+Z)"><a-button size="small"><UndoOutlined /></a-button></a-tooltip>
-              <a-tooltip title="重做 (Ctrl+Y)"><a-button size="small"><RedoOutlined /></a-button></a-tooltip>
-              <a-tooltip title="快捷键"><a-button size="small"><QuestionOutlined /></a-button></a-tooltip>
+              <a-tooltip title="撤销 (Ctrl+Z)"><a-button size="small" @click="action.notify('撤销', '标注')"><UndoOutlined /></a-button></a-tooltip>
+              <a-tooltip title="重做 (Ctrl+Y)"><a-button size="small" @click="action.notify('重做', '标注')"><RedoOutlined /></a-button></a-tooltip>
+              <a-tooltip title="快捷键"><a-button size="small" @click="action.info('快捷键：Ctrl+Z 撤销，Ctrl+Y 重做')"><QuestionOutlined /></a-button></a-tooltip>
             </a-space>
           </div>
 
@@ -36,8 +36,8 @@
               <a-space>
                 <RobotOutlined style="color:#722ed1" />
                 <span>AI 已预标注 <b>18</b> 个实体，请审核确认</span>
-                <a-button type="link" size="small">全部接受</a-button>
-                <a-button type="link" size="small" danger>全部拒绝</a-button>
+                <a-button type="link" size="small" @click="action.notify('采纳', '全部 AI 预标注')">全部接受</a-button>
+                <a-button type="link" size="small" danger @click="action.notify('拒绝', '全部 AI 预标注')">全部拒绝</a-button>
               </a-space>
             </template>
           </a-alert>
@@ -76,8 +76,8 @@
             <template #bodyCell="{ column, record }">
               <template v-if="column.key === 'type'"><a-tag :color="typeColor[record.type]">{{ record.type }}</a-tag></template>
               <template v-else-if="column.key === 'action'">
-                <a-button type="link" size="small">编辑</a-button>
-                <a-button type="link" size="small" danger>删除</a-button>
+                <a-button type="link" size="small" @click="action.openEdit('标注实体', record.text)">编辑</a-button>
+                <a-button type="link" size="small" danger @click="action.confirmDelete(record.text)">删除</a-button>
               </template>
             </template>
           </a-table>
@@ -111,6 +111,9 @@
 import { ref } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
 import { SaveOutlined, UndoOutlined, RedoOutlined, QuestionOutlined, RobotOutlined } from '@ant-design/icons-vue'
+import { useAction } from '@/composables/useAction'
+
+const action = useAction()
 
 const mode = ref('entity')
 

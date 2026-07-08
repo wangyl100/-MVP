@@ -112,7 +112,7 @@
     <div class="page-card">
       <div class="flex-between mb-16">
         <h3 style="margin: 0; font-size: 16px">最近活动</h3>
-        <a-button type="link" size="small">查看全部</a-button>
+        <a-button type="link" size="small" @click="action.info('活动日志完整列表（演示）')">查看全部</a-button>
       </div>
       <a-timeline>
         <a-timeline-item v-for="(act, idx) in recentActivities" :key="idx" :color="statusColor[act.status]">
@@ -160,6 +160,9 @@ import {
   recentActivities
 } from '@/utils/mock'
 import { formatNumber } from '@/utils/mock'
+import { useAction } from '@/composables/useAction'
+
+const action = useAction()
 
 const router = useRouter()
 const timeRange = ref('week')

@@ -2,7 +2,7 @@
   <div class="page-container">
     <PageHeader title="深度学习抽取" description="基于训练好的深度学习模型进行高准确率知识抽取">
       <template #extra>
-        <a-button type="primary"><PlusOutlined /> 新建抽取任务</a-button>
+        <a-button type="primary" @click="action.openCreate('新建抽取任务', '请填写任务名称、选择模型与待抽取语料')"><PlusOutlined /> 新建抽取任务</a-button>
       </template>
     </PageHeader>
 
@@ -24,7 +24,7 @@
               <div class="text-secondary" style="font-size:12px">F1: <b style="color:#52c41a">{{ m.f1 }}</b> · 延迟: {{ m.latency }}ms</div>
               <div class="text-secondary" style="font-size:12px">QPS: {{ m.qps }} · 调用: {{ m.calls }}</div>
             </a-space>
-            <a-button type="primary" size="small" block style="margin-top:8px">使用此模型</a-button>
+            <a-button type="primary" size="small" block style="margin-top:8px" @click="action.notify('使用', m.name)">使用此模型</a-button>
           </a-card>
         </a-col>
       </a-row>
@@ -70,7 +70,7 @@
     <div class="page-card">
       <div class="flex-between mb-16">
         <h3 style="margin:0;font-size:16px">批量抽取任务</h3>
-        <a-button type="primary" size="small"><PlusOutlined /> 新建批量任务</a-button>
+        <a-button type="primary" size="small" @click="action.openCreate('新建批量任务', '请填写任务名称、选择模型与语料范围')"><PlusOutlined /> 新建批量任务</a-button>
       </div>
       <a-table :columns="taskColumns" :data-source="dlTasks" row-key="id" :pagination="{pageSize:8}">
         <template #bodyCell="{ column, record }">
@@ -91,7 +91,9 @@ import { ref } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
 import { PlusOutlined, ThunderboltOutlined } from '@ant-design/icons-vue'
 import { modelList } from '@/utils/mock'
+import { useAction } from '@/composables/useAction'
 
+const action = useAction()
 const onlineModels = modelList.filter((m) => m.status === 'online').map((m) => ({
   ...m, latency: [45, 62, 38][Math.floor(Math.random() * 3)], qps: [120, 85, 200][Math.floor(Math.random() * 3)], calls: Math.floor(Math.random() * 10000)
 }))

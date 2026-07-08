@@ -33,8 +33,8 @@
       <a-table :columns="reviewCols" :data-source="reviews" row-key="id" :pagination="{pageSize:6}">
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'action'">
-            <a-button type="link" size="small" style="color:#52c41a">通过</a-button>
-            <a-button type="link" size="small" danger>驳回</a-button>
+            <a-button type="link" size="small" style="color:#52c41a" @click="action.notify('通过', record.id || '审核项')">通过</a-button>
+            <a-button type="link" size="small" danger @click="action.notify('驳回', record.id || '审核项')">驳回</a-button>
           </template>
         </template>
       </a-table>
@@ -60,6 +60,9 @@
 import PageHeader from '@/components/PageHeader.vue'
 import EChart from '@/components/EChart.vue'
 import { CheckCircleOutlined, WarningOutlined, AuditOutlined, TeamOutlined } from '@ant-design/icons-vue'
+import { useAction } from '@/composables/useAction'
+
+const action = useAction()
 
 const stats = [
   { title: '平均准确率', value: '93.5%', color: 'linear-gradient(135deg,#52c41a,#73d13d)', icon: CheckCircleOutlined },
